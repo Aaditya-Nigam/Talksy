@@ -33,7 +33,7 @@ const App=()=>{
         element: <SignUp/>
       },
       {
-        pah: "/login",
+        path: "/login",
         element: <Login/>
       },
       {

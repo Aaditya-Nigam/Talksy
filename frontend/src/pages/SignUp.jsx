@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore"
 import { FaRegMessage } from "react-icons/fa6";
 import { FaRegUser } from "react-icons/fa";
@@ -17,9 +17,11 @@ export const SignUp=()=>{
     })
     const {authUser,isSigningUp,signUp}=useAuthStore();
     const navigate=useNavigate()
-    if(authUser){
-        navigate("/");
-    }
+    useEffect(()=>{
+        if(authUser){
+            navigate("/");
+        }
+    },[authUser])
 
     const validateForm=()=>{
         if(user.fullName.trim()==0){
@@ -37,7 +39,7 @@ export const SignUp=()=>{
     const handleFormSubmit=(e)=>{
         e.preventDefault();
         const success=validateForm();
-        if(success){
+        if(success===true){
             signUp(user);
         }
     }
@@ -83,6 +85,7 @@ export const SignUp=()=>{
                         </button>
                     </div>
                 </form>
+                <p className="text-center">Already have an account? <NavLink to="/login" className="text-blue-300 hover:text-blue-400 hover:underline">Sign in</NavLink></p>
             </div>
             <Toaster/>
         </main>

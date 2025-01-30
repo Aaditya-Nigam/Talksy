@@ -1,9 +1,10 @@
+import toast from "react-hot-toast";
 import { create } from "zustand"
 
 export const useAuthStore= create((set)=>({
     authUser: null,
     isCheckingAuth: true,
-    isSigningup: false,
+    isSigningUp: false,
     isLoggingIn: false,
     isUpdatingProfile: false,
 
@@ -30,7 +31,7 @@ export const useAuthStore= create((set)=>({
     },
 
     signUp: async (formData)=>{
-        set({isSigningup: true});
+        set({isSigningUp: true});
         try {
             const res=await fetch("http://localhost:5000/api/auth/signUp",{
                 method: "POST",
@@ -43,13 +44,45 @@ export const useAuthStore= create((set)=>({
             const data=await res.json();
             if(res.ok){
                 set({authUser: data});
+                return toast.success("Acount created successfully!")
             }else{
                 set({authUser: null});
+                console.log(data.message)
+                return toast.error(data.message)
             }
         } catch (error) {
             set({authUser: null})
+            console.log(error)
+            return toast.error("Invalid credentials")
         }finally{
-            set({isSigningup: false});
+            set({isSigningUp: false});
+        }
+    },
+
+    login: async (formData)=>{
+        set({isLoggingIn: true})
+        try {
+            const res=await fetch("http://localhost:5000/api/auth/login",{
+                method: "POST",
+                body: JSON.stringify(formData),
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include"
+            })
+            const data=await res.json();
+            if(res.ok){
+                set({authUser: data})
+                toast.success("Successfully logged in!");
+            }else{
+                set({authUser: null})
+                toast.success(data.message);
+            }
+        } catch (error) {
+            toast.error("Something went wrong");
+            console.log(error.message);
+        }finally{
+            set({isLoggingIn: false})
         }
     }
 

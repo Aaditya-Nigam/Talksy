@@ -8,13 +8,16 @@ const authSignUp=async (req,res)=>{
         const {fullName,email,password}=req.body;
         if(!fullName || !email || !password){
             res.status(500).json({message: "Fields are missing!"});
+            return ;
         }
         if(password.length<6){
             res.status(400).json({message: "Password must be atleast 6 characters!"})
+            return ;
         }
         const user=await User.findOne({email});
         if(user){
             res.status(400).json({message: "Email already exists!"})
+            return ;
         }
         const salt=await bcrypt.genSalt(10)
         const hashedPassword=await bcrypt.hash(password,salt);
@@ -46,14 +49,17 @@ const authLogin=async (req,res)=>{
         const {email,password}=req.body;
         if(!email || !password){
             res.status(500).json({message: "Fields are missing!"});
+            return ;
         }
         const user=await User.findOne({email})
         if(!user){
             res.status(400).json({message: "Invalid credentials!"});
+            retrun ;
         }
         const checkPassword=await bcrypt.compare(password,user.password);
         if(!checkPassword){
             res.status(400).json({message: "Invalid credentials!"});
+            return ;
         }
         generateToken(user._id,res);
         res.status(201).json({
