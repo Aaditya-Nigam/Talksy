@@ -84,6 +84,55 @@ export const useAuthStore= create((set)=>({
         }finally{
             set({isLoggingIn: false})
         }
+    },
+
+    logout: async ()=>{
+        try {
+            const res=await fetch("http://localhost:5000/api/auth/logout",{
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include"
+            })
+            const data=await res.json();
+            if(res.ok){
+                set({authUser: null});
+                toast.success(data.message);
+            }else{
+                toast.error(data.message);
+            }
+        } catch (error) {
+            toast.error(data.message);
+            console.log(error.message);
+        }
+    },
+
+    updateProfilePic: async (data)=>{
+        set({isUpdatingProfile: true});
+        try {
+            const res=await fetch("http://localhost:5000/api/auth/update-profile",{
+                method: "PUT",
+                body: JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: "include"
+            })
+            const result=await res.json();
+            if(res.ok){
+                set({authUser: result});
+                toast.success("Profile updated!");
+            }else{
+                toast.error(result.message)
+                console.log(result.message);
+            }
+        } catch (error) {
+            toast.error(error.message)
+            console.log(error);
+        }finally{
+            set({isUpdatingProfile: false});
+        }
     }
 
 }))

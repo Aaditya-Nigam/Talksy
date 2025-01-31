@@ -75,10 +75,15 @@ const authLogin=async (req,res)=>{
 }
 
 const authLogout=(req,res)=>{
-    res.cookie('jwt',"",{
-        maxAge: 0
-    })
-    res.status(201).json({message: "Logout successfully!"})
+    try{
+        res.cookie('jwt',"",{
+            maxAge: 0
+        })
+        res.status(201).json({message: "Logout successfully!"})
+    }catch(err){
+        res.status(500).json({message: "Internal server error!"});
+        console.log("Error in logout controller: ",err.message);
+    }
 }
 
 const authUpdateProfile=async (req,res)=>{
@@ -88,8 +93,8 @@ const authUpdateProfile=async (req,res)=>{
             res.status(500).json({message: "Profile pic is required!"})
         }
         const userId=req.user._id;
-        const updatedResponse=v2.uploader.upload(profilePic);
-        const updatedUser=await User.findByIdAndUpdate(userId, {profilePic:updatedResponse.secure_url},{new:tue})
+        const updatedResponse=await v2.uploader.upload(profilePic);
+        const updatedUser=await User.findByIdAndUpdate(userId, {profilePic:updatedResponse.secure_url},{new:true})
         res.status(201).json(updatedUser)
     } catch (error) {
         console.log("Error in updating profile pic",error.message)
