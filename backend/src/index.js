@@ -17,7 +17,7 @@ app.use(cors({
     credentials: true
 }))
 app.use("/api/auth/",authRoute);
-app.use("/api/message/",messageRoute);
+app.use("/api/messages/",messageRoute);
 
 const PORT=process.env.PORT
 app.listen(PORT,()=>{

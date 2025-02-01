@@ -7,7 +7,6 @@ export const AppLayout=()=>{
         <>
             <Header/>
             <Outlet/>
-            <Footer/>
         </>
     )
 }
